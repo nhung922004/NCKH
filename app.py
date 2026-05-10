@@ -76,83 +76,29 @@ X, Y = np.meshgrid(x_vals, y_vals)
 
 # Công thức tính Moment mô phỏng (theo code cũ của bạn)
 Z_M11 = (q * min(Lx, Ly)**2 / 12) * np.sin(np.pi * X / Lx) * np.sin(np.pi * Y / Ly)
-Z_M22 = (q * min(Lx, Ly)**2 / 12) * np.sin(np.pi * X / Lx) * np.sin(np.pi * Y / Ly) * 0.8  # M22 thường nhỏ hơn M11
+Z_M22 = (q * min(Lx, Ly)**2 / 12) * np.sin(np.pi * X / Lx) * np.sin(np.pi * Y / Ly) * 0.8
 
-# Định nghĩa colorscale chuyên nghiệp
-colorscale_custom = [
-    [0.0, '#0D0887'],      # Xanh đậm
-    [0.1, '#46039F'],
-    [0.2, '#3B4CC0'],
-    [0.3, '#1984D2'],
-    [0.4, '#35B779'],      # Xanh lá
-    [0.5, '#FDE724'],      # Vàng
-    [0.6, '#FFA500'],      # Cam
-    [0.7, '#FF6E3A'],
-    [0.8, '#C81D25'],      # Đỏ
-    [0.9, '#8B0000'],
-    [1.0, '#550000']       # Đỏ tối
-]
-
-def create_beautiful_3d_surface(x, y, z, title, zlabel):
-    """Tạo biểu đồ 3D đẹp như ảnh mẫu - với nền sáng và trục bê tông"""
+def create_3d_surface(x, y, z, title, zlabel):
+    """Tạo biểu đồ 3D Surface đẹp"""
     fig = go.Figure(data=[go.Surface(
         x=x,
         y=y,
         z=z,
-        colorscale=colorscale_custom,
-        contours={
-            "z": {
-                "show": True,
-                "usecolorscale": True,
-                "highlightcolor": "limegreen",
-                "project": {"z": True}
-            }
-        },
-        hovertemplate='<b>Position</b><br>X: %{x:.2f}m<br>Y: %{y:.2f}m<br>' + zlabel + ': %{z:.2f} kNm<extra></extra>'
+        colorscale='Viridis',
+        hovertemplate='X: %{x:.2f}m<br>Y: %{y:.2f}m<br>M: %{z:.2f} kNm<extra></extra>'
     )])
     
-    # Cấu hình scene để giống ảnh mẫu - góc nhìn isometric
     fig.update_layout(
-        title={
-            "text": title,
-            "x": 0.5,
-            "xanchor": "center",
-            "font": {"size": 16}
-        },
+        title=title,
         scene=dict(
-            xaxis=dict(
-                title="Length (L) (m)",
-                backgroundcolor="rgb(240, 240, 240)",
-                gridcolor="white",
-                showbackground=True,
-                zerolinecolor="white",
-            ),
-            yaxis=dict(
-                title="Width (W) (m)",
-                backgroundcolor="rgb(240, 240, 240)",
-                gridcolor="white",
-                showbackground=True,
-                zerolinecolor="white"
-            ),
-            zaxis=dict(
-                title=zlabel + " (kNm)",
-                backgroundcolor="rgb(240, 240, 240)",
-                gridcolor="white",
-                showbackground=True,
-                zerolinecolor="white",
-            ),
-            camera=dict(
-                eye=dict(x=1.5, y=1.5, z=1.3)  # Góc nhìn isometric 3D đẹp
-            ),
-            aspectratio=dict(x=1, y=0.75, z=0.5)
+            xaxis_title="Length (L) (m)",
+            yaxis_title="Width (W) (m)",
+            zaxis_title=zlabel + " (kNm)",
+            camera=dict(eye=dict(x=1.5, y=1.5, z=1.3))
         ),
-        height=600,
-        margin=dict(l=0, r=0, t=50, b=0),
-        showlegend=False,
-        paper_bgcolor='rgba(240, 240, 240, 1)',
-        plot_bgcolor='rgba(240, 240, 240, 1)'
+        height=550,
+        margin=dict(l=0, r=0, t=50, b=0)
     )
-    
     return fig
 
 def create_2d_heatmap(x, y, z, title, zlabel):
@@ -161,28 +107,18 @@ def create_2d_heatmap(x, y, z, title, zlabel):
         z=z,
         x=x,
         y=y,
-        colorscale=colorscale_custom,
+        colorscale='Viridis',
         zsmooth='best',
-        hovertemplate='<b>Position</b><br>X: %{x:.2f}m<br>Y: %{y:.2f}m<br>' + zlabel + ': %{z:.2f} kNm<extra></extra>',
-        colorbar=dict(
-            title=zlabel + "<br>(kNm)",
-            thickness=15,
-            len=0.7,
-        )
+        hovertemplate='X: %{x:.2f}m<br>Y: %{y:.2f}m<br>M: %{z:.2f} kNm<extra></extra>'
     ))
     
     fig.update_layout(
         title=title,
         xaxis_title="Length (L) (m)",
         yaxis_title="Width (W) (m)",
-        height=500,
-        margin=dict(l=60, r=60, t=50, b=60),
-        paper_bgcolor='white',
-        plot_bgcolor='white',
-        xaxis=dict(showgrid=True, gridwidth=1, gridcolor='LightGray'),
-        yaxis=dict(showgrid=True, gridwidth=1, gridcolor='LightGray')
+        height=550,
+        margin=dict(l=60, r=60, t=50, b=60)
     )
-    
     return fig
 
 with tab1:
@@ -191,12 +127,10 @@ with tab1:
     col_3d, col_2d = st.columns(2)
     
     with col_3d:
-        # Vẽ 3D Surface đẹp như ảnh mẫu
-        fig_m11_3d = create_beautiful_3d_surface(x_vals, y_vals, Z_M11, "M11 Bending Moment - 3D Surface", "M11")
+        fig_m11_3d = create_3d_surface(x_vals, y_vals, Z_M11, "M11 Bending Moment - 3D", "M11")
         st.plotly_chart(fig_m11_3d, use_container_width=True)
     
     with col_2d:
-        # Vẽ 2D Heatmap chiếu bằng
         fig_m11_2d = create_2d_heatmap(x_vals, y_vals, Z_M11, "M11 Bending Moment - 2D Top View", "M11")
         st.plotly_chart(fig_m11_2d, use_container_width=True)
 
@@ -206,12 +140,10 @@ with tab2:
     col_3d, col_2d = st.columns(2)
     
     with col_3d:
-        # Vẽ 3D Surface đẹp như ảnh mẫu
-        fig_m22_3d = create_beautiful_3d_surface(x_vals, y_vals, Z_M22, "M22 Bending Moment - 3D Surface", "M22")
+        fig_m22_3d = create_3d_surface(x_vals, y_vals, Z_M22, "M22 Bending Moment - 3D", "M22")
         st.plotly_chart(fig_m22_3d, use_container_width=True)
     
     with col_2d:
-        # Vẽ 2D Heatmap chiếu bằng
         fig_m22_2d = create_2d_heatmap(x_vals, y_vals, Z_M22, "M22 Bending Moment - 2D Top View", "M22")
         st.plotly_chart(fig_m22_2d, use_container_width=True)
 
