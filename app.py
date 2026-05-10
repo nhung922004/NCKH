@@ -41,7 +41,7 @@ with col_main_left:
     st.write(f"**Width (W):** {Ly} m")
     st.write(f"**Thickness (h):** {h} m")
     st.write(f"**Uniform Load (q):** {q} kN/m²")
-    st.write(f"**Strength Grade:** {cap_do_ben}")
+    st.write(f"**Strength Grade:**")
 
 with col_main_right:
     st.title("🏗️ Reinforced Concrete Slab Analysis")
