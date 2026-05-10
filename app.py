@@ -80,117 +80,98 @@ Z_M22 = (q * min(Lx, Ly)**2 / 12) * np.sin(np.pi * X / Lx) * np.sin(np.pi * Y / 
 
 def create_3d_surface_professional(x, y, z, title, zlabel):
     """Tạo biểu đồ 3D Surface chuyên nghiệp như ảnh mẫu"""
-    fig = go.Figure(data=[go.Surface(
+    fig = go.Figure()
+    
+    fig.add_trace(go.Surface(
         x=x,
         y=y,
         z=z,
         colorscale='Viridis',
         showscale=True,
         colorbar=dict(
-            title=f"{zlabel}<br>(kNm)",
+            title=f"{zlabel} (kNm)",
             thickness=20,
             len=0.7,
             x=1.02
         ),
-        hovertemplate='<b>Position</b><br>X: %{x:.2f}m<br>Y: %{y:.2f}m<br>' + zlabel + ': %{z:.2f} kNm<extra></extra>',
+        hovertemplate='X: %{x:.2f}m<br>Y: %{y:.2f}m<br>M: %{z:.2f} kNm<extra></extra>',
         lighting=dict(
-            ambient=0.8,
-            diffuse=0.9,
+            ambient=0.7,
+            diffuse=0.85,
             fresnel=0.04,
             roughness=0.5,
             specular=0.5
-        ),
-        opacity=0.95
-    )])
+        )
+    ))
     
     fig.update_layout(
-        title=dict(
-            text=title,
-            x=0.5,
-            xanchor="center",
-            font=dict(size=18, color="#00BCD4", family="Arial Black")
-        ),
+        title=title,
         scene=dict(
+            xaxis_title="Length (m)",
+            yaxis_title="Width (m)",
+            zaxis_title=f"{zlabel} (kNm)",
             xaxis=dict(
-                title="Length (m)",
-                backgroundcolor="rgba(230, 230, 230, 0.9)",
+                backgroundcolor="rgba(240, 240, 240, 0.9)",
                 gridcolor="white",
-                showbackground=True,
-                zerolinecolor="white",
-                titlefont=dict(size=12)
+                showbackground=True
             ),
             yaxis=dict(
-                title="Width (m)",
-                backgroundcolor="rgba(230, 230, 230, 0.9)",
+                backgroundcolor="rgba(240, 240, 240, 0.9)",
                 gridcolor="white",
-                showbackground=True,
-                zerolinecolor="white",
-                titlefont=dict(size=12)
+                showbackground=True
             ),
             zaxis=dict(
-                title=f"{zlabel} (kNm)",
-                backgroundcolor="rgba(230, 230, 230, 0.9)",
+                backgroundcolor="rgba(240, 240, 240, 0.9)",
                 gridcolor="white",
-                showbackground=True,
-                zerolinecolor="white",
-                titlefont=dict(size=12)
+                showbackground=True
             ),
             camera=dict(
-                eye=dict(x=1.8, y=1.8, z=1.5),
-                center=dict(x=0, y=0, z=0)
+                eye=dict(x=1.8, y=1.8, z=1.5)
             ),
             aspectratio=dict(x=1.2, y=0.9, z=0.6)
         ),
         height=650,
-        margin=dict(l=0, r=100, t=80, b=0),
-        showlegend=False,
-        paper_bgcolor='white',
-        plot_bgcolor='white',
-        font=dict(family="Arial, sans-serif", size=11)
+        margin=dict(l=0, r=100, t=60, b=0),
+        paper_bgcolor='white'
     )
     
     return fig
 
 def create_2d_heatmap_professional(x, y, z, title, zlabel):
     """Tạo biểu đồ 2D Heatmap chiếu bằng chuyên nghiệp"""
-    fig = go.Figure(data=go.Heatmap(
+    fig = go.Figure()
+    
+    fig.add_trace(go.Heatmap(
         z=z,
         x=x,
         y=y,
         colorscale='Viridis',
         zsmooth='best',
-        hovertemplate='<b>Position</b><br>X: %{x:.2f}m<br>Y: %{y:.2f}m<br>' + zlabel + ': %{z:.2f} kNm<extra></extra>',
+        hovertemplate='X: %{x:.2f}m<br>Y: %{y:.2f}m<br>M: %{z:.2f} kNm<extra></extra>',
         colorbar=dict(
-            title=f"{zlabel}<br>(kNm)",
+            title=f"{zlabel} (kNm)",
             thickness=20,
             len=0.7
         )
     ))
     
     fig.update_layout(
-        title=dict(
-            text=title,
-            x=0.5,
-            xanchor="center",
-            font=dict(size=18, color="#00BCD4", family="Arial Black")
-        ),
+        title=title,
+        xaxis_title="Length (m)",
+        yaxis_title="Width (m)",
         xaxis=dict(
-            title="Length (m)",
             showgrid=True,
             gridwidth=1,
             gridcolor='LightGray'
         ),
         yaxis=dict(
-            title="Width (m)",
             showgrid=True,
             gridwidth=1,
             gridcolor='LightGray'
         ),
         height=650,
-        margin=dict(l=70, r=100, t=80, b=70),
-        paper_bgcolor='white',
-        plot_bgcolor='white',
-        font=dict(family="Arial, sans-serif", size=11)
+        margin=dict(l=70, r=100, t=60, b=70),
+        paper_bgcolor='white'
     )
     
     return fig
@@ -205,7 +186,7 @@ with tab1:
         st.plotly_chart(fig_m11_3d, use_container_width=True)
     
     with col_2d:
-        fig_m11_2d = create_2d_heatmap_professional(x_vals, y_vals, Z_M11, "M11 Bending Moment - 2D Top View (Plan)", "M11")
+        fig_m11_2d = create_2d_heatmap_professional(x_vals, y_vals, Z_M11, "M11 Bending Moment - 2D Top View", "M11")
         st.plotly_chart(fig_m11_2d, use_container_width=True)
 
 with tab2:
@@ -218,7 +199,7 @@ with tab2:
         st.plotly_chart(fig_m22_3d, use_container_width=True)
     
     with col_2d:
-        fig_m22_2d = create_2d_heatmap_professional(x_vals, y_vals, Z_M22, "M22 Bending Moment - 2D Top View (Plan)", "M22")
+        fig_m22_2d = create_2d_heatmap_professional(x_vals, y_vals, Z_M22, "M22 Bending Moment - 2D Top View", "M22")
         st.plotly_chart(fig_m22_2d, use_container_width=True)
 
 # ==========================================
